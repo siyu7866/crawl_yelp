@@ -53,8 +53,8 @@ def haveReview(result: ResultSet):
 
 def main():
     temp_list = []
-    df_url = pd.read_excel('/Users/siyuxiang/Desktop/textmining/ist_332/final_project/final_crawl/SBRC_Doctor_Reviews.xlsx')
-    
+    df_url = pd.read_excel('The directory of file sotring urls')
+
     for i in range(80, 120):
         # Parse the homepage of a business
         url = df_url['URL'][i]
@@ -90,7 +90,7 @@ def main():
     for i in range(1, len(temp_list)):
         tmp_df = pd.DataFrame(temp_list[i])
         df = df.append(tmp_df, ignore_index=True)
-    df.to_csv('/Users/siyuxiang/Desktop/textmining/ist_332/final_project/final_crawl/url_80_to_119.csv', index=False)
+    df.to_csv('The directory to store data as csv file', index=False)
 
 if __name__ == "__main__":
     main()
