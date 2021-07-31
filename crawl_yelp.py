@@ -53,9 +53,9 @@ def haveReview(result: ResultSet):
 
 def main():
     temp_list = []
-    df_url = pd.read_excel('The directory of file sotring urls')
+    df_url = pd.read_excel('/Users/siyuxiang/Desktop/textmining/ist_332/final_project/final_crawl/SBRC_Doctor_Reviews.xlsx')
 
-    for i in range(80, 120):
+    for i in range(0, 21):
         # Parse the homepage of a business
         url = df_url['URL'][i]
         res = urllib.request.urlopen(url)
@@ -67,7 +67,7 @@ def main():
         # Make a GET request to the target URL to get the raw HTML data
         print("the " + str(i) + "th URL is being crawled")
         response = requests.get(url).text
-        time.sleep(random.randint(30, 40))
+        time.sleep(random.randint(20, 30))
         # Use BeautifulSoup to parse HTML
         soup = BeautifulSoup(response,'html.parser')
         result = soup.findAll(class_="review__373c0__3MsBX")
@@ -77,10 +77,8 @@ def main():
             temp_dict = getReviewContent(result, i, soup)
             temp_list.append(temp_dict)
             index += 1
-            url = df_url['URL'][i]
-            url = url + "?start=" + str(index*10)
             # Make a GET request to the target URL to get the raw HTML data
-            response = requests.get(url).text
+            response = requests.get(url + "?start=" + str(index*10)).text
             # Use BeautifulSoup to parse HTML
             soup = BeautifulSoup(response,'html.parser')
             result = soup.findAll(class_="review__373c0__3MsBX")
@@ -90,7 +88,7 @@ def main():
     for i in range(1, len(temp_list)):
         tmp_df = pd.DataFrame(temp_list[i])
         df = df.append(tmp_df, ignore_index=True)
-    df.to_csv('The directory to store data as csv file', index=False)
+    df.to_csv('/Users/siyuxiang/Desktop/textmining/ist_332/final_project/final_crawl/url_from_0_to_20.csv', index=False)
 
 if __name__ == "__main__":
     main()
