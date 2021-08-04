@@ -10,7 +10,6 @@ from bs4.element import ResultSet
 import urllib
 
 def getReviewContent(result: ResultSet, index: int, soup: BeautifulSoup):
-    #results = results
     name_list = []
     rating_list = []
     date_list = []
@@ -51,34 +50,43 @@ def haveReview(result: ResultSet):
     else:
         return True
 
-def main():
-    temp_list = []
-    df_url = pd.read_excel('/Users/siyuxiang/Desktop/textmining/ist_332/final_project/final_crawl/SBRC_Doctor_Reviews.xlsx')
-
-    for i in range(0, 21):
-        # Parse the homepage of a business
-        url = df_url['URL'][i]
+def getCurrentUrl(url: str):
+    try:
         res = urllib.request.urlopen(url)
         finalurl = res.geturl()
         if finalurl==url:
             pass
         else:
             url = finalurl
-        # Make a GET request to the target URL to get the raw HTML data
+    except requests.exceptions.RequestException as e:
+        raise SystemExit(e)
+    return url
+
+def main():
+    temp_list = []
+    df_url = pd.read_excel('/Users/siyuxiang/Desktop/textmining/ist_332/final_project/final_crawl/SBRC_Doctor_Reviews.xlsx')
+
+    for i in range(268, 296):
+        url = df_url['URL'][i]
+        url = getCurrentUrl(url)
         print("the " + str(i) + "th URL is being crawled")
-        response = requests.get(url).text
+        try:
+            response = requests.get(url).text
+        except requests.exceptions.RequestException as e:
+            raise SystemExit(e)
         time.sleep(random.randint(20, 30))
         # Use BeautifulSoup to parse HTML
         soup = BeautifulSoup(response,'html.parser')
         result = soup.findAll(class_="review__373c0__3MsBX")
         index = 0
-        # result = ResultSet
         while(haveReview(result)):
             temp_dict = getReviewContent(result, i, soup)
             temp_list.append(temp_dict)
             index += 1
-            # Make a GET request to the target URL to get the raw HTML data
-            response = requests.get(url + "?start=" + str(index*10)).text
+            try:
+                response = requests.get(url + "?start=" + str(index*10)).text
+            except requests.exceptions.RequestException as e:
+                raise SystemExit(e)
             # Use BeautifulSoup to parse HTML
             soup = BeautifulSoup(response,'html.parser')
             result = soup.findAll(class_="review__373c0__3MsBX")
@@ -88,7 +96,7 @@ def main():
     for i in range(1, len(temp_list)):
         tmp_df = pd.DataFrame(temp_list[i])
         df = df.append(tmp_df, ignore_index=True)
-    df.to_csv('/Users/siyuxiang/Desktop/textmining/ist_332/final_project/final_crawl/url_from_0_to_20.csv', index=False)
+    df.to_csv('/Users/siyuxiang/Desktop/textmining/ist_332/final_project/final_crawl/url_268_to_296.csv', index=False)
 
 if __name__ == "__main__":
     main()
