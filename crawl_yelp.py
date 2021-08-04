@@ -64,7 +64,7 @@ def getCurrentUrl(url: str):
 
 def main():
     temp_list = []
-    df_url = pd.read_excel('/Users/siyuxiang/Desktop/textmining/ist_332/final_project/final_crawl/SBRC_Doctor_Reviews.xlsx')
+    df_url = pd.read_excel('file path of excel having urls')
 
     for i in range(268, 296):
         url = df_url['URL'][i]
@@ -96,7 +96,7 @@ def main():
     for i in range(1, len(temp_list)):
         tmp_df = pd.DataFrame(temp_list[i])
         df = df.append(tmp_df, ignore_index=True)
-    df.to_csv('/Users/siyuxiang/Desktop/textmining/ist_332/final_project/final_crawl/url_268_to_296.csv', index=False)
+    df.to_csv('file path to save data as csv', index=False)
 
 if __name__ == "__main__":
     main()
